@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.netease.db.dao.UserInfoDao">
+
+    <sql id="fields">
+		id,nickname,password,uniqcode,usertype,phone,address,money
+	</sql>
+
+    <insert id="save" parameterType="UserInfoModel" keyProperty="id" useGeneratedKeys="true">
+        insert into user_info(nickname,password,uniqcode,usertype,phone,address,money)
+        values(#{nickname},#{password},#{uniqcode},#{usertype},#{phone},#{address},#{money})
+    </insert>
+
+    <select id="findById" resultType="UserInfoModel">
+        select
+        <include refid="fields"/>
+        from user_info where id = #{id}
+    </select>
+
+    <select id="findByNickname" resultType="UserInfoModel">
+        select
+        <include refid="fields"/>
+        from user_info where nickname = #{nickname}
+    </select>
+
+    <select id="findByUniqCode" resultType="UserInfoModel">
+        select
+        <include refid="fields"/>
+        from user_info where user_code = #{uniqcode}
+    </select>
+
+    <select id="queryAll" resultType="UserInfoModel">
+        select
+        <include refid="fields"/>
+        from user_info
+    </select>
+
+    <update id="updateActivatedByNickname">
+        UPDATE user_info
+        SET activated = #{activated}
+        WHERE nickname = #{nickname}
+    </update>
+
+    <update id="updatePasswordByNickname">
+        UPDATE user_info
+        SET password = #{newPassword}
+        WHERE nickname = #{nickname}
+    </update>
+
+    <update id="updatePhoneAddressByUserCode">
+        UPDATE user_info
+        SET phone = #{newPhone},
+        address = #{newAddress}
+        WHERE user_code = #{userCode}
+    </update>
+
+</mapper>
