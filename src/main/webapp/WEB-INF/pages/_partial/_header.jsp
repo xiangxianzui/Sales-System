@@ -25,7 +25,7 @@
                     <c:otherwise>
                         <li title='昵称'><a href="#"><span class="glyphicon glyphicon-user"> ${User.nickname}</span></a></li>
                         <c:set var = "buyer" value = "<%= UserType.BUYER.VALUE %>"/>
-                        <c:set var = "seller" value = "<%= UserType.BUYER.VALUE %>"/>
+                        <c:set var = "seller" value = "<%= UserType.SELLER.VALUE %>"/>
                         <c:choose>
                             <c:when test="${User.usertype == buyer}">
                                 <li title='财务'><a href="#"><span class="glyphicon glyphicon-usd"> 财务</span></a></li>
@@ -44,14 +44,3 @@
     </nav>
     <!--navbar ends-->
 </header>
-
-<div id="header">
-    <a href="/index" id="logo"></a> <!-- /#logo -->
-    <ul id="navigation">
-        <li><a href="/index">Home</a></li>
-        <li><a href="about.html">About</a></li>
-        <li><a href="blog.html">Blog</a></li>
-        <li><a href="shop.html">Shop</a></li>
-        <li><a href="contact-us.html">Contact Us</a></li>
-    </ul>
-</div> <!-- /#header -->

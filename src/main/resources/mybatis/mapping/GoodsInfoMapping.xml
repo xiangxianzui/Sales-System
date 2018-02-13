@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.netease.db.dao.GoodsInfoDao">
+
+    <sql id="fields">
+        id,seller_id as sellerId,title,image,abstract as abs,description as des,price,amount
+    </sql>
+
+    <insert id="save" parameterType="GoodsInfoModel" keyProperty="id" useGeneratedKeys="true">
+        insert into goods_info(seller_id,title,image,abstract,description,price,amount)
+        values(#{sellerId},#{title},#{image},#{abs},#{des},#{price},#{amount})
+    </insert>
+
+    <select id="findById" resultType="GoodsInfoModel">
+        select
+        <include refid="fields"/>
+        from goods_info where id = #{id}
+    </select>
+
+    <select id="findByTitle" resultType="GoodsInfoModel">
+        select
+        <include refid="fields"/>
+        from goods_info where title = #{title}
+    </select>
+
+    <select id="queryAll" resultType="GoodsInfoModel">
+        select
+        <include refid="fields"/>
+        from goods_info
+    </select>
+
+    <select id="queryPagination" resultType="GoodsInfoModel">
+        select
+        <include refid="fields"/>
+        from goods_info
+        limit #{limit}
+        offset #{offset}
+    </select>
+
+    <select id="getCount" resultType="Integer">
+        select
+        COUNT(id)
+        from goods_info
+    </select>
+    
+    <select id="findByBuyer" resultType="Map">
+        select
+        gi.id as goodsId,
+        gi.seller_id as sellerId,
+        oi.buyer_id as buyerId,
+        gi.title as goodsTitle,
+        gi.image as goodsImage,
+        gi.abstract as goodsAbs,
+        gi.description as goodsDes,
+        gi.price as goodsPrice,
+        gi.amount as goodsAmount,
+        oi.price as dealPrice,
+        oi.amount as dealAmount,
+        oi.create_time as orderCreateTime,
+        oi.pay_time as orderPayTime
+        from goods_info gi
+        right join order_info oi on gi.id = oi.goods_id
+        where oi.buyer_id = #{buyerId}
+    </select>
+
+    <select id="findByBuyerNot" resultType="Map">
+        select
+        gi.id as goodsId,
+        gi.seller_id as sellerId,
+        oi.buyer_id as buyerId,
+        gi.title as goodsTitle,
+        gi.image as goodsImage,
+        gi.abstract as goodsAbs,
+        gi.description as goodsDes,
+        gi.price as goodsPrice,
+        gi.amount as goodsAmount,
+        oi.price as dealPrice,
+        oi.amount as dealAmount,
+        oi.create_time as orderCreateTime,
+        oi.pay_time as orderPayTime
+        from goods_info gi
+        left join order_info oi on gi.id = oi.goods_id
+        where oi.buyer_id != #{buyerId} or oi.buyer_id is null
+    </select>
+
+    <select id="findBySeller" resultType="Map">
+        select
+        gi.id as goodsId,
+        gi.seller_id as sellerId,
+        oi.buyer_id as buyerId,
+        gi.title as goodsTitle,
+        gi.image as goodsImage,
+        gi.abstract as goodsAbs,
+        gi.description as goodsDes,
+        gi.price as goodsPrice,
+        gi.amount as goodsAmount,
+        oi.price as dealPrice,
+        oi.amount as dealAmount,
+        oi.create_time as orderCreateTime,
+        oi.pay_time as orderPayTime
+        from goods_info gi
+        right join order_info oi on gi.id = oi.goods_id
+        where oi.seller_id = #{sellerId}
+    </select>
+
+    <select id="findBySellerNot" resultType="Map">
+        select
+        gi.id as goodsId,
+        gi.seller_id as sellerId,
+        oi.buyer_id as buyerId,
+        gi.title as goodsTitle,
+        gi.image as goodsImage,
+        gi.abstract as goodsAbs,
+        gi.description as goodsDes,
+        gi.price as goodsPrice,
+        gi.amount as goodsAmount,
+        oi.price as dealPrice,
+        oi.amount as dealAmount,
+        oi.create_time as orderCreateTime,
+        oi.pay_time as orderPayTime
+        from goods_info gi
+        left join order_info oi on gi.id = oi.goods_id
+        where oi.seller_id != #{sellerId} or oi.seller_id is null
+    </select>
+
+</mapper>

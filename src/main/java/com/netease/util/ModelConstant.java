@@ -7,6 +7,10 @@ public class ModelConstant {
 
     public static final String USER = "User";
 
+    public static final String GOODS = "Goods";
+
     public static final String LOGIN_MSG = "LoginMsg";
+
+    public static final String PUBLISH_MSG = "PublishMsg";
 
 }

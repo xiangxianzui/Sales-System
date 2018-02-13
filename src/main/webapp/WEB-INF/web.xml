@@ -55,4 +55,16 @@
 		<servlet-name>mvc-dispatcher</servlet-name>
 		<url-pattern>/</url-pattern>
 	</servlet-mapping>
+
+
+    <!-- 自定义error page -->
+    <!-- 此处设置当response code为404时，请求/error/404 -->
+    <error-page>
+        <error-code>404</error-code>
+        <location>/error/404</location>
+    </error-page>
+    <error-page>
+        <error-code>403</error-code>
+        <location>/error/403</location>
+    </error-page>
 </web-app>

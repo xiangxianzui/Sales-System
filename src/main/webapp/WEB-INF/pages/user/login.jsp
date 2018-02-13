@@ -10,6 +10,7 @@
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="f" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <jsp:include page="../_partial/_head.jsp"/>
 <title>登录 - 销售系统</title>
@@ -24,12 +25,12 @@
         <div class="login-input-box">
             <span class="icon icon-user"></span>
             <f:input path="nickname"/>
-            <f:errors path="nickname" cssStyle="font-size:x-small;color: #cc2f1b;"/>
+            <f:errors path="nickname" cssClass="alert-danger"/>
         </div>
         <div class="login-input-box">
             <span class="icon icon-password"></span>
             <f:password path="password"/>
-            <f:errors path="password" cssStyle="font-size:x-small;color: #cc2f1b;"/>
+            <f:errors path="password" cssClass="alert-danger"/>
         </div>
         <div class="login-input-box">
             <input class="login-button" type="submit" value="登录">

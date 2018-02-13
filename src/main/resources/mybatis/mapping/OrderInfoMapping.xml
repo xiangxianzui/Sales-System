@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.netease.db.dao.OrderInfoDao">
+
+    <sql id="fields">
+        id,buyer_id as buyerId,seller_id as sellerId,goods_id as goodsId,price,amount,create_time as createTime,pay_time as payTime
+    </sql>
+
+    <select id="findById" resultMap="OrderResult">
+        select
+        oi.id as order_id,
+        oi.price as order_price,
+        oi.amount as order_amount,
+        oi.create_time as order_createTime,
+        oi.pay_time as order_payTime,
+        gi.id as goods_id,
+        gi.seller_id as goods_sellerId,
+        gi.title as goods_title,
+        gi.image as goods_image,
+        gi.abstract as goods_abs,
+        gi.description as goods_des,
+        gi.price as goods_price,
+        gi.amount as goods_amount
+        from order_info oi
+        left join goods_info gi on oi.goods_id = gi.id
+        where oi.id = #{id}
+    </select>
+
+    <resultMap id="OrderResult" type="com.netease.db.model.OrderInfoModel">
+        <constructor>
+            <idArg column="order_id" javaType="long"/>
+            <arg column="order_price" javaType="java.math.BigDecimal"/>
+            <arg column="order_amount" javaType="int"/>
+            <arg column="order_createTime" javaType="java.util.Date"/>
+            <arg column="order_payTime" javaType="java.util.Date"/>
+        </constructor>
+        <association property="goods" column="goods_id" javaType="com.netease.db.model.GoodsInfoModel">
+            <id property="id" column="goods_id"/>
+            <result property="title" column="goods_title"/>
+            <result property="image" column="goods_image"/>
+            <result property="abs" column="goods_abs"/>
+            <result property="des" column="goods_des"/>
+            <result property="price" column="goods_price"/>
+            <result property="amount" column="goods_amount"/>
+        </association>
+    </resultMap>
+
+
+</mapper>

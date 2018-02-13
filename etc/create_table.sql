@@ -20,7 +20,7 @@ CREATE TABLE `goods_info` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'id',
   `seller_id` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '发布此商品的卖家id',
   `title` varchar(50) NOT NULL default '' COMMENT '商品名称',
-  `image` varchar(50) NOT NULL default '' COMMENT '图片',
+  `image` varchar(100) NOT NULL default '' COMMENT '图片',
   `abstract` varchar(50) NOT NULL default '' COMMENT '摘要',
   `description` varchar(100) NOT NULL default '' COMMENT '正文描述',
   `price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '即时单价',

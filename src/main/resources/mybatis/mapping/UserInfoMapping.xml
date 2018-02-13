@@ -35,23 +35,4 @@
         from user_info
     </select>
 
-    <update id="updateActivatedByNickname">
-        UPDATE user_info
-        SET activated = #{activated}
-        WHERE nickname = #{nickname}
-    </update>
-
-    <update id="updatePasswordByNickname">
-        UPDATE user_info
-        SET password = #{newPassword}
-        WHERE nickname = #{nickname}
-    </update>
-
-    <update id="updatePhoneAddressByUserCode">
-        UPDATE user_info
-        SET phone = #{newPhone},
-        address = #{newAddress}
-        WHERE user_code = #{userCode}
-    </update>
-
 </mapper>
