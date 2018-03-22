@@ -11,6 +11,10 @@ public class OrderInfoModel implements Serializable {
 
     private long id;
 
+    private long buyerId;
+
+    private long sellerId;
+
     private BigDecimal price;
 
     private int amount;
@@ -19,19 +23,17 @@ public class OrderInfoModel implements Serializable {
 
     private Date payTime;
 
-    public OrderInfoModel(Long id, BigDecimal price, Integer amount, Date createTime, Date payTime) {
+    /*public OrderInfoModel(long id, long buyerId, long sellerId, BigDecimal price, int amount, Date createTime, Date payTime) {
         this.id = id;
+        this.buyerId = buyerId;
+        this.sellerId = sellerId;
         this.price = price;
         this.amount = amount;
         this.createTime = createTime;
         this.payTime = payTime;
-    }
+    }*/
 
     /*---- 关联表信息 ----*/
-    private UserInfoModel buyer;
-
-    private UserInfoModel seller;
-
     private GoodsInfoModel goods;
 
     public long getId() {
@@ -40,6 +42,22 @@ public class OrderInfoModel implements Serializable {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public long getBuyerId() {
+        return buyerId;
+    }
+
+    public void setBuyerId(long buyerId) {
+        this.buyerId = buyerId;
+    }
+
+    public long getSellerId() {
+        return sellerId;
+    }
+
+    public void setSellerId(long sellerId) {
+        this.sellerId = sellerId;
     }
 
     public BigDecimal getPrice() {
@@ -72,22 +90,6 @@ public class OrderInfoModel implements Serializable {
 
     public void setPayTime(Date payTime) {
         this.payTime = payTime;
-    }
-
-    public UserInfoModel getBuyer() {
-        return buyer;
-    }
-
-    public void setBuyer(UserInfoModel buyer) {
-        this.buyer = buyer;
-    }
-
-    public UserInfoModel getSeller() {
-        return seller;
-    }
-
-    public void setSeller(UserInfoModel seller) {
-        this.seller = seller;
     }
 
     public GoodsInfoModel getGoods() {

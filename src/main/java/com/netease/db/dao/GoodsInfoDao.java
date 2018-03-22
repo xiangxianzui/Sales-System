@@ -13,11 +13,13 @@ public interface GoodsInfoDao {
 
     int save(GoodsInfoModel goodsInfoModel);
 
+    int update(GoodsInfoModel goodsInfoModel);
+
     GoodsInfoModel findById(@Param("id") long id);
 
     GoodsInfoModel findByTitle(@Param("title") String title);
 
-    List<GoodsInfoModel> queryAll();
+    List<Map<String, Object>> queryAll();
 
     //分页查询
     List<GoodsInfoModel> queryPagination(@Param("limit") int limit, @Param("offset") int offset);
@@ -25,12 +27,12 @@ public interface GoodsInfoDao {
     //得到goods_info表一共有多少条数据
     int getCount();
 
-    List<Map<String, Object>> findByBuyer(long buyerId);
+    List<Map<String, Object>> queryByBuyer(long buyerId);
 
-    List<Map<String, Object>> findByBuyerNot(long buyerId);
+    List<Map<String, Object>> queryByBuyerNot(long buyerId);
 
-    List<Map<String, Object>> findBySeller(long buyerId);
+    List<Map<String, Object>> queryBySeller(long sellerId);
 
-    List<Map<String, Object>> findBySellerNot(long buyerId);
+    List<Map<String, Object>> queryBySellerNot(long sellerId);
 
 }

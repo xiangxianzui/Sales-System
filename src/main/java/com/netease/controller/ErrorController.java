@@ -20,4 +20,9 @@ public class ErrorController {
     public String _403(){
         return "error/403";
     }
+
+    @RequestMapping(value = "/other", method = RequestMethod.GET)
+    public String _other() {
+        return "error/other";
+    }
 }

@@ -19,4 +19,5 @@ public interface OrderInfoDao {
     //分页查询
     List<OrderInfoModel> queryPagination(@Param("limit") int limit, @Param("offset") int offset);
 
+    List<OrderInfoModel> queryByBuyerAndGoods(@Param("buyerId") long buyerId, @Param("goodsId") long goodsId);
 }

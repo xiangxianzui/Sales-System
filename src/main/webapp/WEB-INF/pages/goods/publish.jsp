@@ -20,7 +20,7 @@
 
     <div class="container">
         <div id="page">
-            <a class="title" href="#">商品发布</a>
+            <span class="title">商品发布</span>
             <hr>
 
             <f:form method="post" modelAttribute="<%= ModelConstant.GOODS %>" cssClass="form-horizontal">
@@ -51,7 +51,7 @@
                                     <input type="radio" onchange="radioOnChange()" name="radioOptions" id="radio2" value="2"> 上传
                                 </label>
                                 <f:input path="image" id="inputImageUrl" cssClass="form-control" oninput="urlOnInput(this.value)"/>
-                                <f:input path="image" id="inputImageFile" type="file" cssClass="form-control hidden"/>
+                                <%--<f:input path="image" id="inputImageFile" type="file" cssClass="form-control hidden"/>--%>
                                 <f:errors path="image" cssClass="alert-danger"/>
                             </div>
                         </div>

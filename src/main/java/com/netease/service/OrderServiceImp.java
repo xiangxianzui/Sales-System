@@ -25,4 +25,9 @@ public class OrderServiceImp implements OrderService {
     public OrderInfoModel viewOrder(long id) {
         return orderInfoDao.findById(id);
     }
+
+    @Override
+    public List<OrderInfoModel> queryByBuyerAndGoods(long buyerId, long goodsId) {
+        return orderInfoDao.queryByBuyerAndGoods(buyerId, goodsId);
+    }
 }

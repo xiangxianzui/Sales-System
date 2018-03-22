@@ -67,4 +67,7 @@
         <error-code>403</error-code>
         <location>/error/403</location>
     </error-page>
+    <!--<error-page>
+        <location>/error/other</location>
+    </error-page>-->
 </web-app>

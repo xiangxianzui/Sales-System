@@ -14,7 +14,7 @@
     <!--navbar starts-->
     <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
         <div class="navbar-header">
-            <a title="销售系统" class="navbar-brand" href="#"><span>销售系统</span></a>
+            <a title="销售系统" class="navbar-brand" href="/"><span>销售系统</span></a>
         </div>
         <div class="pull-right">
             <ul class="nav navbar-nav">
@@ -33,7 +33,7 @@
                                 </li>
                             </c:when>
                             <c:otherwise>
-                                <li title='发布'><a href="#"><span class="glyphicon glyphicon-send"> 发布</span></a></li>
+                                <li title='发布'><a href="/goods/publish"><span class="glyphicon glyphicon-send"> 发布</span></a></li>
                             </c:otherwise>
                         </c:choose>
                         <li title='退出'><a href="/user/logout"><span class="glyphicon glyphicon-off"> 退出</span></a></li>

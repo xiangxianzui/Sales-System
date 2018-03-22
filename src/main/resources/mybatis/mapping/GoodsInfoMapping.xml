@@ -11,6 +11,19 @@
         values(#{sellerId},#{title},#{image},#{abs},#{des},#{price},#{amount})
     </insert>
 
+    <update id="update" parameterType="GoodsInfoModel">
+        update goods_info
+        set
+        goods_info.seller_id = #{sellerId},
+        goods_info.title = #{title},
+        goods_info.image = #{image},
+        goods_info.abstract = #{abs},
+        goods_info.description = #{des},
+        goods_info.price = #{price},
+        goods_info.amount = #{amount}
+        where goods_info.id = #{id}
+    </update>
+
     <select id="findById" resultType="GoodsInfoModel">
         select
         <include refid="fields"/>
@@ -23,10 +36,24 @@
         from goods_info where title = #{title}
     </select>
 
-    <select id="queryAll" resultType="GoodsInfoModel">
-        select
-        <include refid="fields"/>
-        from goods_info
+    <select id="queryAll" resultType="Map">
+        SELECT DISTINCT
+  gi.id,
+  gi.seller_id AS sellerId,
+  gi.title,
+  gi.image,
+  gi.abstract AS abs,
+  gi.description AS des,
+  gi.price,
+  gi.amount,
+  CASE WHEN oi.buyer_id = #{buyerId} THEN 'true'
+  ELSE 'false'
+  END AS isBuy,
+  CASE WHEN oi.seller_id = #{sellerId} THEN 'true'
+  ELSE 'false'
+  END AS isSell
+FROM goods_info gi
+LEFT JOIN order_info oi ON gi.id = oi.goods_id
     </select>
 
     <select id="queryPagination" resultType="GoodsInfoModel">
@@ -43,7 +70,7 @@
         from goods_info
     </select>
     
-    <select id="findByBuyer" resultType="Map">
+    <select id="queryByBuyer" resultType="Map">
         select
         gi.id as goodsId,
         gi.seller_id as sellerId,
@@ -63,7 +90,7 @@
         where oi.buyer_id = #{buyerId}
     </select>
 
-    <select id="findByBuyerNot" resultType="Map">
+    <select id="queryByBuyerNot" resultType="Map">
         select
         gi.id as goodsId,
         gi.seller_id as sellerId,
@@ -83,7 +110,7 @@
         where oi.buyer_id != #{buyerId} or oi.buyer_id is null
     </select>
 
-    <select id="findBySeller" resultType="Map">
+    <select id="queryBySeller" resultType="Map">
         select
         gi.id as goodsId,
         gi.seller_id as sellerId,
@@ -103,7 +130,7 @@
         where oi.seller_id = #{sellerId}
     </select>
 
-    <select id="findBySellerNot" resultType="Map">
+    <select id="queryBySellerNot" resultType="Map">
         select
         gi.id as goodsId,
         gi.seller_id as sellerId,

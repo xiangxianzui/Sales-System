@@ -6,9 +6,11 @@
         id,buyer_id as buyerId,seller_id as sellerId,goods_id as goodsId,price,amount,create_time as createTime,pay_time as payTime
     </sql>
 
-    <select id="findById" resultMap="OrderResult">
+    <!--<select id="findById" resultMap="OrderResult">
         select
         oi.id as order_id,
+        oi.buyer_id as order_buyerId,
+        oi.seller_id as order_sellerId,
         oi.price as order_price,
         oi.amount as order_amount,
         oi.create_time as order_createTime,
@@ -29,6 +31,8 @@
     <resultMap id="OrderResult" type="com.netease.db.model.OrderInfoModel">
         <constructor>
             <idArg column="order_id" javaType="long"/>
+            <arg column="order_buyerId" javaType="long"/>
+            <arg column="order_sellerId" javaType="long"/>
             <arg column="order_price" javaType="java.math.BigDecimal"/>
             <arg column="order_amount" javaType="int"/>
             <arg column="order_createTime" javaType="java.util.Date"/>
@@ -43,7 +47,14 @@
             <result property="price" column="goods_price"/>
             <result property="amount" column="goods_amount"/>
         </association>
-    </resultMap>
+    </resultMap>-->
 
+
+    <select id="queryByBuyerAndGoods" resultType="OrderInfoModel">
+        select
+        <include refid="fields"/>
+        from order_info
+        where buyer_id = #{buyerId} and goods_id = #{goodsId}
+    </select>
 
 </mapper>

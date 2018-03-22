@@ -39,8 +39,6 @@ public class GoodsInfoModel implements Serializable {
     /*@NotEmpty(message = "库存不能为空")*/
     private int amount;
 
-    private UserInfoModel seller;
-
     public long getId() {
         return id;
     }

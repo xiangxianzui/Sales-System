@@ -4,6 +4,7 @@ import com.netease.db.dao.GoodsInfoDao;
 import com.netease.db.model.GoodsInfoModel;
 import com.netease.db.model.UserInfoModel;
 import com.netease.db.model.enums.UserType;
+import com.netease.service.enums.EditMsg;
 import com.netease.service.enums.PublishMsg;
 import com.netease.util.ModelConstant;
 import org.springframework.stereotype.Service;
@@ -22,7 +23,7 @@ public class GoodsServiceImp implements GoodsService{
     private GoodsInfoDao goodsInfoDao;
 
     @Override
-    public List<GoodsInfoModel> listAll() {
+    public List<Map<String, Object>> listAll() {
         return goodsInfoDao.queryAll();
     }
 
@@ -65,6 +66,31 @@ public class GoodsServiceImp implements GoodsService{
     }
 
     @Override
+    public String edit(GoodsInfoModel goodsInfoModel, HttpServletRequest req){
+        String retMsg;
+        UserInfoModel curUser = (UserInfoModel)req.getSession().getAttribute(ModelConstant.USER);
+        if(curUser == null){
+            retMsg = EditMsg.FAIL_NO_USER.EXTVALUE;
+            return retMsg;
+        }
+
+        int userType = curUser.getUsertype();
+        if(userType == UserType.BUYER.VALUE){
+            retMsg = EditMsg.FAIL_UNCORRECT_USER.EXTVALUE;
+            return retMsg;
+        }
+        if(userType == UserType.SELLER.VALUE){
+            goodsInfoModel.setSellerId(curUser.getId());
+            goodsInfoDao.update(goodsInfoModel);
+            retMsg = EditMsg.SUCCESS.EXTVALUE;
+            return retMsg;
+        }
+
+        retMsg = EditMsg.FAIL_UNKNOWN_USER.EXTVALUE;
+        return retMsg;
+    }
+
+    @Override
     public GoodsInfoModel viewGoods(long id) {
         return goodsInfoDao.findById(id);
     }
@@ -72,19 +98,19 @@ public class GoodsServiceImp implements GoodsService{
     @Override
     public List<Map<String, Object>> listByBuyer(long buyerId, boolean flag) {
         if(flag){
-            return goodsInfoDao.findByBuyer(buyerId);
+            return goodsInfoDao.queryByBuyer(buyerId);
         }
         else {
-            return goodsInfoDao.findByBuyerNot(buyerId);
+            return goodsInfoDao.queryByBuyerNot(buyerId);
         }
     }
 
     @Override
     public List<Map<String, Object>> listBySeller(long sellerId, boolean flag) {
         if (flag) {
-            return goodsInfoDao.findBySeller(sellerId);
+            return goodsInfoDao.queryBySeller(sellerId);
         } else {
-            return goodsInfoDao.findBySellerNot(sellerId);
+            return goodsInfoDao.queryBySellerNot(sellerId);
         }
     }
 

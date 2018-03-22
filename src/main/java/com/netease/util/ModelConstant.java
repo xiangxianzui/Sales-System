@@ -13,4 +13,6 @@ public class ModelConstant {
 
     public static final String PUBLISH_MSG = "PublishMsg";
 
+    public static final String EDIT_MSG = "EditMsg";
+
 }

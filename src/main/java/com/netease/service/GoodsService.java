@@ -11,7 +11,7 @@ import java.util.Map;
  */
 public interface GoodsService {
 
-    List<GoodsInfoModel> listAll();
+    List<Map<String, Object>> listAll();
 
     List<GoodsInfoModel> listPagination(int limit, int offset);
 
@@ -19,6 +19,8 @@ public interface GoodsService {
     int getGoodsCount();
 
     String publish(GoodsInfoModel goodsInfoModel, HttpServletRequest req);
+
+    String edit(GoodsInfoModel goodsInfoModel, HttpServletRequest req);
 
     GoodsInfoModel viewGoods(long id);
 

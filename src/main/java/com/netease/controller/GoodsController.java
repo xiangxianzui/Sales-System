@@ -2,9 +2,12 @@ package com.netease.controller;
 
 import com.google.common.base.Strings;
 import com.netease.db.model.GoodsInfoModel;
+import com.netease.db.model.OrderInfoModel;
 import com.netease.db.model.UserInfoModel;
 import com.netease.db.model.enums.UserType;
 import com.netease.service.GoodsService;
+import com.netease.service.OrderService;
+import com.netease.service.enums.EditMsg;
 import com.netease.service.enums.PublishMsg;
 import com.netease.util.ModelConstant;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +40,9 @@ public class GoodsController {
     @Autowired
     private GoodsService goodsService;
 
+    @Autowired
+    private OrderService orderService;
+
     /*@RequestMapping(value = "/list", method = RequestMethod.GET)
     public ModelAndView list(@RequestParam(value="page",required=true) int page){
         int limit = PAGINATION_LIMIT_SHOW;
@@ -61,8 +67,8 @@ public class GoodsController {
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     @ResponseBody
-    public List<GoodsInfoModel> list(){
-        List<GoodsInfoModel> goodsList = goodsService.listAll();
+    public List<Map<String, Object>> list(){
+        List<Map<String, Object>> goodsList = goodsService.listAll();
         return goodsList;
     }
 
@@ -102,6 +108,25 @@ public class GoodsController {
         return goodsList;
     }
 
+    @RequestMapping(value = "/isOrderExist", method = RequestMethod.GET)
+    @ResponseBody
+    public boolean isOrderExist(HttpServletRequest req,
+                                @RequestParam(value="goodsId",required=true) long goodsId){
+        Object obj = req.getSession().getAttribute(ModelConstant.USER);
+        if(obj == null || Strings.isNullOrEmpty(obj.toString())){
+            return false;
+        }
+        UserInfoModel curUser = (UserInfoModel)obj;
+        if(UserType.BUYER.VALUE != curUser.getUsertype()){
+            return false;
+        }
+
+        long buyerId = curUser.getId();
+        List<OrderInfoModel> orders = orderService.queryByBuyerAndGoods(buyerId, goodsId);
+
+        return (orders == null || orders.size() == 0);
+    }
+
     @RequestMapping(value = "/detail/{id}", method = RequestMethod.GET)
     public ModelAndView viewGoodsDetail(@PathVariable long id){
         GoodsInfoModel goods = goodsService.viewGoods(id);
@@ -137,6 +162,38 @@ public class GoodsController {
             else{//发布失败
                 modelMap.addAttribute(ModelConstant.PUBLISH_MSG, msg);
                 return "goods/publish";
+            }
+        }
+    }
+
+    @RequestMapping(value = "/edit/{id}", method = RequestMethod.GET)
+    public ModelAndView edit(@PathVariable("id") long id) {
+        GoodsInfoModel goods = goodsService.viewGoods(id);
+        if(goods != null){
+            ModelAndView mav = new ModelAndView("goods/edit");
+            mav.addObject(ModelConstant.GOODS, goods);
+            return mav;
+        }
+        else {
+            return new ModelAndView("error/404");
+        }
+    }
+
+    @RequestMapping(value = "/edit/{id}", method = RequestMethod.POST)
+    public String edit(ModelMap modelMap, HttpServletRequest req,
+                       @PathVariable("id") long id,
+                       @Validated @ModelAttribute(ModelConstant.GOODS) GoodsInfoModel goods,
+                       BindingResult br) {
+        if (br.hasErrors()) {
+            return "goods/edit";
+        } else {
+            String msg = goodsService.edit(goods, req);
+            if(EditMsg.SUCCESS.EXTVALUE.equals(msg)){//编辑成功
+                return "redirect:/index";
+            }
+            else{//编辑失败
+                modelMap.addAttribute(ModelConstant.EDIT_MSG, msg);
+                return "goods/edit";
             }
         }
     }
