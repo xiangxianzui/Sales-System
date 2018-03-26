@@ -15,11 +15,17 @@ public interface GoodsInfoDao {
 
     int update(GoodsInfoModel goodsInfoModel);
 
+    int delete(GoodsInfoModel goodsInfoModel);
+
     GoodsInfoModel findById(@Param("id") long id);
 
     GoodsInfoModel findByTitle(@Param("title") String title);
 
     List<Map<String, Object>> queryAll();
+
+    List<Map<String, Object>> queryAllBuyer(@Param("buyerId") long buyerId);
+
+    List<Map<String, Object>> queryAllSeller(@Param("sellerId") long sellerId);
 
     //分页查询
     List<GoodsInfoModel> queryPagination(@Param("limit") int limit, @Param("offset") int offset);

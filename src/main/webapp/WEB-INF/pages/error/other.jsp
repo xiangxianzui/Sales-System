@@ -9,13 +9,13 @@
 <html>
 <jsp:include page="../_partial/_head.jsp"/>
 <head>
-    <title>出错了</title>
+    <title>Some Errors Occur...</title>
 </head>
 
 <body>
 <div class="container">
     <div class="text-center">
-        <h1>出错了...</h1>
+        <h1>Some Errors Occur...</h1>
     </div>
 </div>
 </body>

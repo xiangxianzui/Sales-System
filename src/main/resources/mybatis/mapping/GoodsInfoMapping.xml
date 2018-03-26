@@ -24,6 +24,11 @@
         where goods_info.id = #{id}
     </update>
 
+    <delete id="delete" parameterType="GoodsInfoModel">
+        delete from goods_info
+        where goods_info.id = #{id}
+    </delete>
+
     <select id="findById" resultType="GoodsInfoModel">
         select
         <include refid="fields"/>
@@ -37,23 +42,35 @@
     </select>
 
     <select id="queryAll" resultType="Map">
-        SELECT DISTINCT
-  gi.id,
-  gi.seller_id AS sellerId,
-  gi.title,
-  gi.image,
-  gi.abstract AS abs,
-  gi.description AS des,
-  gi.price,
-  gi.amount,
-  CASE WHEN oi.buyer_id = #{buyerId} THEN 'true'
-  ELSE 'false'
-  END AS isBuy,
-  CASE WHEN oi.seller_id = #{sellerId} THEN 'true'
-  ELSE 'false'
-  END AS isSell
-FROM goods_info gi
-LEFT JOIN order_info oi ON gi.id = oi.goods_id
+        select * from goods_info
+    </select>
+
+    <select id="queryAllBuyer" resultType="Map">
+        select
+  gi.id as goodsId,
+  gi.title as goodsTitle,
+  gi.image as goodsImage,
+  gi.price as goodsPrice,
+  gi.amount as goodsAmount,
+  case when gi.id in (select distinct oi.goods_id
+                      from order_info oi
+                      where oi.buyer_id=#{buyerId})
+    then 'true' else 'false' end as isBuy
+from goods_info gi
+    </select>
+
+    <select id="queryAllSeller" resultType="Map">
+        select
+        gi.id as goodsId,
+        gi.title as goodsTitle,
+        gi.image as goodsImage,
+        gi.price as goodsPrice,
+        gi.amount as goodsAmount,
+        case when gi.id in (select distinct oi.goods_id
+        from order_info oi
+        where oi.seller_id=#{sellerId})
+        then 'true' else 'false' end as isSell
+        from goods_info gi
     </select>
 
     <select id="queryPagination" resultType="GoodsInfoModel">
@@ -72,62 +89,39 @@ LEFT JOIN order_info oi ON gi.id = oi.goods_id
     
     <select id="queryByBuyer" resultType="Map">
         select
-        gi.id as goodsId,
-        gi.seller_id as sellerId,
-        oi.buyer_id as buyerId,
+        oi.goods_id as goodsId,
         gi.title as goodsTitle,
         gi.image as goodsImage,
-        gi.abstract as goodsAbs,
-        gi.description as goodsDes,
         gi.price as goodsPrice,
-        gi.amount as goodsAmount,
-        oi.price as dealPrice,
-        oi.amount as dealAmount,
-        oi.create_time as orderCreateTime,
-        oi.pay_time as orderPayTime
-        from goods_info gi
-        right join order_info oi on gi.id = oi.goods_id
-        where oi.buyer_id = #{buyerId}
+        sum(oi.amount) as buyAmount
+        from order_info oi left join goods_info gi on oi.goods_id=gi.id
+        where oi.buyer_id=#{buyerId}
+        group by oi.goods_id;
     </select>
 
     <select id="queryByBuyerNot" resultType="Map">
         select
         gi.id as goodsId,
-        gi.seller_id as sellerId,
-        oi.buyer_id as buyerId,
         gi.title as goodsTitle,
         gi.image as goodsImage,
-        gi.abstract as goodsAbs,
-        gi.description as goodsDes,
-        gi.price as goodsPrice,
-        gi.amount as goodsAmount,
-        oi.price as dealPrice,
-        oi.amount as dealAmount,
-        oi.create_time as orderCreateTime,
-        oi.pay_time as orderPayTime
+        gi.price as goodsPrice
         from goods_info gi
-        left join order_info oi on gi.id = oi.goods_id
-        where oi.buyer_id != #{buyerId} or oi.buyer_id is null
+        where gi.id not in
+        (select distinct oi.goods_id
+        from order_info oi
+        where oi.buyer_id=#{buyerId})
     </select>
 
     <select id="queryBySeller" resultType="Map">
         select
-        gi.id as goodsId,
-        gi.seller_id as sellerId,
-        oi.buyer_id as buyerId,
+        oi.goods_id as goodsId,
         gi.title as goodsTitle,
         gi.image as goodsImage,
-        gi.abstract as goodsAbs,
-        gi.description as goodsDes,
         gi.price as goodsPrice,
-        gi.amount as goodsAmount,
-        oi.price as dealPrice,
-        oi.amount as dealAmount,
-        oi.create_time as orderCreateTime,
-        oi.pay_time as orderPayTime
-        from goods_info gi
-        right join order_info oi on gi.id = oi.goods_id
-        where oi.seller_id = #{sellerId}
+        sum(oi.amount) as soldAmount
+        from order_info oi left join goods_info gi on oi.goods_id=gi.id
+        where oi.seller_id=#{sellerId}
+        group by oi.goods_id;
     </select>
 
     <select id="queryBySellerNot" resultType="Map">

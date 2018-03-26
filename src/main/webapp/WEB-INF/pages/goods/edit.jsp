@@ -44,13 +44,12 @@
                         <label class="control-label col-xs-1">图片</label>
                         <div class="col-xs-11">
                             <label class="radio-inline">
-                                <input type="radio" onchange="radioOnChange()" name="radioOptions" id="radio1" value="1" checked> URL
+                                <input type="radio" name="radioOptions" id="radio1" value="1" checked> URL
                             </label>
                             <label class="radio-inline">
-                                <input type="radio" onchange="radioOnChange()" name="radioOptions" id="radio2" value="2"> 上传
+                                <input type="radio" name="radioOptions" id="radio2" value="2" onclick="showModal()"> 上传
                             </label>
                             <f:input path="image" id="inputImageUrl" cssClass="form-control" oninput="urlOnInput(this.value)"/>
-                                <%--<f:input path="image" id="inputImageFile" type="file" cssClass="form-control hidden"/>--%>
                             <f:errors path="image" cssClass="alert-danger"/>
                         </div>
                     </div>
@@ -77,13 +76,10 @@
             <div class="row">
                 <div class="col-md-8">
                     <div class="form-group">
-                        <label for="inputPrice" class="control-label col-xs-1">单价</label>
+                        <label for="inputPrice" class="control-label col-xs-1">单价(元)</label>
                         <div class="col-xs-4">
                             <f:input path="price" id="inputPrice" cssClass="form-control"/>
                             <f:errors path="price" cssClass="alert-danger"/>
-                        </div>
-                        <div class="col-xs-7">
-                            <span class="control-label" style="float: left">元</span>
                         </div>
                     </div>
                 </div>
@@ -92,27 +88,50 @@
             <div class="row">
                 <div class="col-md-8">
                     <div class="form-group">
-                        <label for="inputAmount" class="control-label col-xs-1">库存</label>
-                        <div class="col-xs-4">
-                            <f:input path="amount" id="inputAmount" cssClass="form-control"/>
+                        <label for="inputAmount" class="control-label col-xs-1">库存(件)</label>
+                        <div class="input-group col-xs-4">
+                                <span class="input-group-btn">
+                                <button class="btn btn-default" type="button" onclick="minusone()">-</button>
+                                </span>
+                            <f:input path="amount" id="inputAmount" cssClass="form-control text-center" onkeyup="value=value.replace(/[^\d]/g,'1')" placeholder="请输入数字"/>
                             <f:errors path="amount" cssClass="alert-danger"/>
-                        </div>
-                        <div class="col-xs-7">
-                            <span class="control-label" style="float: left">件</span>
+                                <span class="input-group-btn">
+                                <button class="btn btn-default" type="button" onclick="plusone()">+</button>
+                                </span>
                         </div>
                     </div>
                 </div>
             </div>
 
             <div class="row">
-                <div class="col-md-10">
+                <div class="col-md-8">
+                    <a class="btn btn-default btn-lg" href="/index" style="float: right">返回</a>
+                </div>
+                <div class="col-md-2">
                     <input class="btn btn-success btn-lg" style="float: right" type="submit" value="完成">
                 </div>
             </div>
         </f:form>
 
     </div>
+</div>
 
+<div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="uploadModalLabel">上传图片</h4>
+            </div>
+            <div class="modal-body">
+                <input id="upload_input" type="file" name="attach"/>
+            </div>
+            <div class="modal-footer">
+                <button id="upload_btn" type="button" class="btn btn-success" data-dismiss="modal">确认</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="result-msg">${EditMsg}</div>
@@ -121,8 +140,67 @@
 
 <script>
 
+    function showModal(){
+        $('#uploadModal').modal('show');
+    }
+
+    $(document).ready(function(){
+        var formData = new FormData();
+        $('#upload_btn').on('click', function(){
+            var file = $('#upload_input')[0].files[0];
+            if(file){
+                var suffix = file.name.substring(file.name.lastIndexOf(".")).toLowerCase();
+                if(!suffix.match(/.jpg|.jpeg|.gif|.png|.bmp|.ico/i)){
+                    alert("请上传图片(png,jpg,gif)");
+                }
+                else{
+                    var max_size = 1048576;
+                    if(file.size > max_size){
+                        alert("文件超过1M");
+                    }
+                    else{
+                        formData.append('attach', file);
+                        $.ajax({
+                            url: '/upload',
+                            type: 'POST',
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+                            success: function(data){
+                                $('#inputImageUrl').val(data);
+                                $('#previewImg').attr("src", data);
+                            }
+                        });
+                    }
+                }
+            }
+            else{
+                alert("请先选择文件");
+            }
+        });
+    });
+
+    $(document).ready(function(){
+        $('#inputAmount').val(${Goods.amount});
+    });
+
     function urlOnInput(val){
         $('#previewImg').attr("src", val);
+    }
+
+    function minusone(){
+        var val = $('#inputAmount').val();
+        val = eval(val)-1;
+        if(val <= 0){
+            val = 0;
+        }
+        $('#inputAmount').val(val);
+    }
+
+    function plusone(){
+        var val = $('#inputAmount').val();
+        val = eval(val)+1;
+        $('#inputAmount').val(val);
     }
 </script>
 </body>

@@ -7,8 +7,10 @@ import com.netease.db.model.UserInfoModel;
 import com.netease.db.model.enums.UserType;
 import com.netease.service.GoodsService;
 import com.netease.service.OrderService;
+import com.netease.service.enums.DeleteMsg;
 import com.netease.service.enums.EditMsg;
 import com.netease.service.enums.PublishMsg;
+import com.netease.service.enums.PurchaseMsg;
 import com.netease.util.ModelConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -65,10 +67,44 @@ public class GoodsController {
         return mav;
     }*/
 
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    @RequestMapping(value = "/listAll", method = RequestMethod.GET)
     @ResponseBody
-    public List<Map<String, Object>> list(){
+    public List<Map<String, Object>> listAll(){
         List<Map<String, Object>> goodsList = goodsService.listAll();
+        return goodsList;
+    }
+
+    @RequestMapping(value = "/listAllBuyer", method = RequestMethod.GET)
+    @ResponseBody
+    public List<Map<String, Object>> listAllBuyer(HttpServletRequest req){
+        Object obj = req.getSession().getAttribute(ModelConstant.USER);
+        if(obj == null || Strings.isNullOrEmpty(obj.toString())){
+            return null;
+        }
+        UserInfoModel curUser = (UserInfoModel)obj;
+        if(UserType.BUYER.VALUE != curUser.getUsertype()){
+            return null;
+        }
+
+        long buyerId = curUser.getId();
+        List<Map<String, Object>> goodsList = goodsService.listAllBuyer(buyerId);
+        return goodsList;
+    }
+
+    @RequestMapping(value = "/listAllSeller", method = RequestMethod.GET)
+    @ResponseBody
+    public List<Map<String, Object>> listAllSeller(HttpServletRequest req){
+        Object obj = req.getSession().getAttribute(ModelConstant.USER);
+        if(obj == null || Strings.isNullOrEmpty(obj.toString())){
+            return null;
+        }
+        UserInfoModel curUser = (UserInfoModel)obj;
+        if(UserType.SELLER.VALUE != curUser.getUsertype()){
+            return null;
+        }
+
+        long sellerId = curUser.getId();
+        List<Map<String, Object>> goodsList = goodsService.listAllSeller(sellerId);
         return goodsList;
     }
 
@@ -108,25 +144,6 @@ public class GoodsController {
         return goodsList;
     }
 
-    @RequestMapping(value = "/isOrderExist", method = RequestMethod.GET)
-    @ResponseBody
-    public boolean isOrderExist(HttpServletRequest req,
-                                @RequestParam(value="goodsId",required=true) long goodsId){
-        Object obj = req.getSession().getAttribute(ModelConstant.USER);
-        if(obj == null || Strings.isNullOrEmpty(obj.toString())){
-            return false;
-        }
-        UserInfoModel curUser = (UserInfoModel)obj;
-        if(UserType.BUYER.VALUE != curUser.getUsertype()){
-            return false;
-        }
-
-        long buyerId = curUser.getId();
-        List<OrderInfoModel> orders = orderService.queryByBuyerAndGoods(buyerId, goodsId);
-
-        return (orders == null || orders.size() == 0);
-    }
-
     @RequestMapping(value = "/detail/{id}", method = RequestMethod.GET)
     public ModelAndView viewGoodsDetail(@PathVariable long id){
         GoodsInfoModel goods = goodsService.viewGoods(id);
@@ -141,7 +158,16 @@ public class GoodsController {
     }
 
     @RequestMapping(value = "/publish", method = RequestMethod.GET)
-    public ModelAndView publish() {
+    public ModelAndView publish(HttpServletRequest req) {
+        Object obj = req.getSession().getAttribute(ModelConstant.USER);
+        if(obj == null || Strings.isNullOrEmpty(obj.toString())){
+            return new ModelAndView("error/403");
+        }
+        UserInfoModel curUser = (UserInfoModel)obj;
+        if(UserType.SELLER.VALUE != curUser.getUsertype()){
+            return new ModelAndView("error/403");
+        }
+
         GoodsInfoModel goodsInfoModel = new GoodsInfoModel();
         ModelAndView mav = new ModelAndView("goods/publish");
         mav.addObject(ModelConstant.GOODS, goodsInfoModel);
@@ -167,7 +193,17 @@ public class GoodsController {
     }
 
     @RequestMapping(value = "/edit/{id}", method = RequestMethod.GET)
-    public ModelAndView edit(@PathVariable("id") long id) {
+    public ModelAndView edit(HttpServletRequest req,
+                             @PathVariable("id") long id) {
+        Object obj = req.getSession().getAttribute(ModelConstant.USER);
+        if(obj == null || Strings.isNullOrEmpty(obj.toString())){
+            return new ModelAndView("error/403");
+        }
+        UserInfoModel curUser = (UserInfoModel)obj;
+        if(UserType.SELLER.VALUE != curUser.getUsertype()){
+            return new ModelAndView("error/403");
+        }
+
         GoodsInfoModel goods = goodsService.viewGoods(id);
         if(goods != null){
             ModelAndView mav = new ModelAndView("goods/edit");
@@ -196,5 +232,32 @@ public class GoodsController {
                 return "goods/edit";
             }
         }
+    }
+
+    @RequestMapping(value = "/purchase", method = RequestMethod.POST,
+            produces = "application/text; charset=utf-8")
+    @ResponseBody
+    public String purchase(HttpServletRequest req,
+                           @RequestParam(value = "goodsId", required = true) long goodsId,
+                           @RequestParam(value = "amount", required = true) int amount){
+        GoodsInfoModel goods = goodsService.viewGoods(goodsId);
+        String msg = goodsService.purchase(goods, amount, req);
+        return msg;
+    }
+
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
+    public String delete(HttpServletRequest req,
+                         @PathVariable("id") long id){
+        GoodsInfoModel goods = goodsService.viewGoods(id);
+        String msg = goodsService.delete(goods, req);
+        if(DeleteMsg.SUCCESS.EXTVALUE.equals(msg)){
+            return "redirect:/index";
+        }
+        else if(DeleteMsg.FAIL_NO_USER.EXTVALUE.equals(msg)
+                || DeleteMsg.FAIL_UNCORRECT_USER.EXTVALUE.equals(msg)
+                || DeleteMsg.FAIL_UNKNOWN_USER.EXTVALUE.equals(msg)){
+            return "error/403";
+        }
+        return "error/other";
     }
 }

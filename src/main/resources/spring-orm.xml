@@ -38,7 +38,6 @@
         <property name="dataSource" ref="dataSource" />
     </bean>
 
-    <!-- 加上 mode="aspectj"会报错，不知为什么 -->
     <tx:annotation-driven transaction-manager="transactionManager"/>
 
     <!-- 整合Spring和MyBatis -->

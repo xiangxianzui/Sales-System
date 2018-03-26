@@ -28,8 +28,8 @@
                         <c:set var = "seller" value = "<%= UserType.SELLER.VALUE %>"/>
                         <c:choose>
                             <c:when test="${User.usertype == buyer}">
-                                <li title='财务'><a href="#"><span class="glyphicon glyphicon-usd"> 财务</span></a></li>
-                                <li title='购物车'><a href='#'><span class="glyphicon glyphicon-shopping-cart"> 购物车</span></a>
+                                <li title='财务'><a href="/finance"><span class="glyphicon glyphicon-usd"> 财务</span></a></li>
+                                <li title='购物车'><a href='/cart'><span class="glyphicon glyphicon-shopping-cart"> 购物车</span></a>
                                 </li>
                             </c:when>
                             <c:otherwise>

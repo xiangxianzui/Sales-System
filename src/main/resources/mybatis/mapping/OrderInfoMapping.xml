@@ -3,7 +3,25 @@
 <mapper namespace="com.netease.db.dao.OrderInfoDao">
 
     <sql id="fields">
-        id,buyer_id as buyerId,seller_id as sellerId,goods_id as goodsId,price,amount,create_time as createTime,pay_time as payTime
+        id,buyer_id as buyerId,seller_id as sellerId,goods_id as goodsId,price,amount,create_time as createTime,pay_time as payTime,status
+    </sql>
+
+    <sql id="order_goods_fields">
+        oi.id as orderId,
+        oi.buyer_id as buyerId,
+        oi.seller_id as sellerId,
+        oi.price as orderPrice,
+        oi.amount as orderAmount,
+        oi.create_time as orderCreateTime,
+        oi.pay_time as orderPayTime,
+        oi.status as orderStatus,
+        gi.id as goodsId,
+        gi.title as goodsTitle,
+        gi.image as goodsImage,
+        gi.abstract as goodsAbs,
+        gi.description as goodsDes,
+        gi.price as goodsPrice,
+        gi.amount as goodsAmount
     </sql>
 
     <!--<select id="findById" resultMap="OrderResult">
@@ -49,12 +67,51 @@
         </association>
     </resultMap>-->
 
+    <insert id="save" parameterType="OrderInfoModel" keyProperty="id" useGeneratedKeys="true">
+        insert into order_info(buyer_id,seller_id,goods_id,price,amount,create_time,pay_time,status)
+        values(#{buyerId},#{sellerId},#{goodsId},#{price},#{amount},#{createTime},#{payTime},#{status})
+    </insert>
+
+    <select id="findById" resultType="OrderInfoModel">
+        select
+        <include refid="fields"/>
+        from order_info
+        where id = #{id}
+    </select>
+
+    <update id="update" parameterType="OrderInfoModel">
+        update order_info
+        set
+        order_info.buyer_id = #{buyerId},
+        order_info.seller_id = #{sellerId},
+        order_info.goods_id = #{goodsId},
+        order_info.price = #{price},
+        order_info.amount = #{amount},
+        order_info.create_time = #{createTime},
+        order_info.pay_time = #{payTime},
+        order_info.status = #{status}
+        where order_info.id = #{id}
+    </update>
 
     <select id="queryByBuyerAndGoods" resultType="OrderInfoModel">
         select
         <include refid="fields"/>
         from order_info
         where buyer_id = #{buyerId} and goods_id = #{goodsId}
+    </select>
+
+    <select id="queryBySellerAndGoods" resultType="OrderInfoModel">
+        select
+        <include refid="fields"/>
+        from order_info
+        where seller_id = #{sellerId} and goods_id = #{goodsId}
+    </select>
+
+    <select id="queryByBuyerAndStatus" resultType="OrderGoodsBean">
+        select
+        <include refid="order_goods_fields"/>
+        from order_info oi left join goods_info gi on oi.goods_id=gi.id
+        where oi.buyer_id = #{buyerId} and oi.status = #{status}
     </select>
 
 </mapper>

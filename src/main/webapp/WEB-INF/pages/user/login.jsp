@@ -38,9 +38,7 @@
     </f:form>
 
     <div class="logon-box">
-        <a href="password/find">忘记密码?</a>
-        |
-        <a href="register">注册账户</a>
+        <a href="#" onclick="alert('buyer:reyub \n seller:relles')">忘记密码?</a>
     </div>
 </div> <!-- /#login-content -->
 <div class="result-msg">${LoginMsg}</div>

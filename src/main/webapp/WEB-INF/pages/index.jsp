@@ -17,30 +17,45 @@
     <div id="page">
         <c:choose>
             <c:when test="${User == null}">
-                <a class="title" href="#">全部商品</a>
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link title active" href="#">全部商品</a>
+                    </li>
+                </ul>
             </c:when>
             <c:otherwise>
                 <c:set var = "buyer" value = "<%= UserType.BUYER.VALUE %>"/>
                 <c:set var = "seller" value = "<%= UserType.SELLER.VALUE %>"/>
                 <c:choose>
                     <c:when test="${User.usertype == buyer}">
-                        <a class="title" href="#" onclick="ajaxQueryAll()">全部商品</a>
-                        |
-                        <a class="title" href="#" onclick="ajaxQueryBuy(true)">已购买</a>
-                        |
-                        <a class="title" href="#" onclick="ajaxQueryBuy(false)">未购买</a>
+                        <ul class="nav nav-tabs">
+                            <li class="nav-item">
+                                <a class="nav-link title active" href="#" onclick="ajaxQueryAllBuyer()">全部商品</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link title" href="#" onclick="ajaxQueryBuy(true)">已购买</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link title" href="#" onclick="ajaxQueryBuy(false)">未购买</a>
+                            </li>
+                        </ul>
                     </c:when>
                     <c:otherwise>
-                        <a class="title" href="#" onclick="ajaxQueryAll()">全部商品</a>
-                        |
-                        <a class="title" href="#" onclick="ajaxQuerySell(true)">已出售</a>
-                        |
-                        <a class="title" href="#" onclick="ajaxQuerySell(false)">未出售</a>
+                        <ul class="nav nav-tabs">
+                            <li class="nav-item">
+                                <a class="nav-link title active" href="#" onclick="ajaxQueryAllSeller()">全部商品</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link title" href="#" onclick="ajaxQuerySell(true)">已出售</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link title" href="#" onclick="ajaxQuerySell(false)">未出售</a>
+                            </li>
+                        </ul>
                     </c:otherwise>
                 </c:choose>
             </c:otherwise>
         </c:choose>
-        <hr>
 
         <div>
             <div>
@@ -106,13 +121,26 @@
 
 <script>
     $(document).ready(function(){
-        ajaxQueryAll();
+        if(${User==null}){
+            ajaxQueryAll();
+            return;
+        }
+        var buyer = <%= UserType.BUYER.VALUE %>;
+        var seller = <%= UserType.SELLER.VALUE %>;
+        if(${User.usertype == buyer}){
+            ajaxQueryAllBuyer();
+            return;
+        }
+        if(${User.usertype == seller}){
+            ajaxQueryAllSeller();
+            return;
+        }
     });
 
 
     function ajaxQueryAll(){
         $.ajax({
-            url: 'goods/list',
+            url: 'goods/listAll',
             success: function(data){
                 $('#all-goods-div').html("");
                 var goodsList = data;
@@ -124,6 +152,68 @@
                         var goodsPrice = b.price;
                         var html = "<div class='col-sm-6 col-md-3'><div class='thumbnail'><a href='/goods/detail/"+goodsId+"'><img style='width: 256px;height: 256px' src='"+goodsImg+"' alt='"+goodsTitle+"'></a><div class='caption'><p>"+goodsTitle+"</p><p>&yen"+goodsPrice+"</p></div></div></div>";
                         $('#all-goods-div').append(html);
+                    });
+                    $('#total-count').html(goodsList.length);
+                }
+                else{//没有商品
+                    $('#exampleModal').modal('show');
+                }
+            }
+        });
+    }
+
+    function ajaxQueryAllBuyer(){
+        $.ajax({
+            url: 'goods/listAllBuyer',
+            success: function(data){
+                $('#all-goods-div').html("");
+                var goodsList = data;
+                if(goodsList !== null && goodsList.length !== 0){
+                    goodsList.forEach(function(b){
+                        var goodsId = b.goodsId;
+                        var goodsTitle = b.goodsTitle;
+                        var goodsImg = b.goodsImage;
+                        var goodsPrice = b.goodsPrice;
+                        var isBuy = b.isBuy;
+                        if(isBuy == 'true'){
+                            var html = "<div class='col-sm-6 col-md-3'><div class='thumbnail'><a href='/goods/detail/"+goodsId+"'><img style='width: 256px;height: 256px' src='"+goodsImg+"' alt='"+goodsTitle+"'></a><div class='caption'><p>"+goodsTitle+"<span>(已购)</span></p><p>&yen;"+goodsPrice+"</p></div></div></div>";
+                            $('#all-goods-div').append(html);
+                        }
+                        else{
+                            var html = "<div class='col-sm-6 col-md-3'><div class='thumbnail'><a href='/goods/detail/"+goodsId+"'><img style='width: 256px;height: 256px' src='"+goodsImg+"' alt='"+goodsTitle+"'></a><div class='caption'><p>"+goodsTitle+"</p><p>&yen;"+goodsPrice+"</p></div></div></div>";
+                            $('#all-goods-div').append(html);
+                        }
+                    });
+                    $('#total-count').html(goodsList.length);
+                }
+                else{//没有商品
+                    $('#exampleModal').modal('show');
+                }
+            }
+        });
+    }
+
+    function ajaxQueryAllSeller(){
+        $.ajax({
+            url: 'goods/listAllSeller',
+            success: function(data){
+                $('#all-goods-div').html("");
+                var goodsList = data;
+                if(goodsList !== null && goodsList.length !== 0){
+                    goodsList.forEach(function(b){
+                        var goodsId = b.goodsId;
+                        var goodsTitle = b.goodsTitle;
+                        var goodsImg = b.goodsImage;
+                        var goodsPrice = b.goodsPrice;
+                        var isSell = b.isSell;
+                        if(isSell == 'true'){
+                            var html = "<div class='col-sm-6 col-md-3'><div class='thumbnail'><a href='/goods/detail/"+goodsId+"'><img style='width: 256px;height: 256px' src='"+goodsImg+"' alt='"+goodsTitle+"'></a><div class='caption'><p>"+goodsTitle+"<span>(已售)</span></p><p>&yen;"+goodsPrice+"</p></div></div></div>";
+                            $('#all-goods-div').append(html);
+                        }
+                        else{
+                            var html = "<div class='col-sm-6 col-md-3'><div class='thumbnail'><a href='/goods/detail/"+goodsId+"'><img style='width: 256px;height: 256px' src='"+goodsImg+"' alt='"+goodsTitle+"'></a><div class='caption'><p>"+goodsTitle+"</p><p>&yen;"+goodsPrice+"</p></div></div></div>";
+                            $('#all-goods-div').append(html);
+                        }
                     });
                     $('#total-count').html(goodsList.length);
                 }
@@ -146,8 +236,16 @@
                         var goodsTitle = b.goodsTitle;
                         var goodsImg = b.goodsImage;
                         var goodsPrice = b.goodsPrice;
-                        var html = "<div class='col-sm-6 col-md-3'><div class='thumbnail'><a href='/goods/detail/"+goodsId+"'><img style='width: 256px;height: 256px' src='"+goodsImg+"' alt='"+goodsTitle+"'></a><div class='caption'><p>"+goodsTitle+"</p><p>&yen"+goodsPrice+"</p></div></div></div>";
-                        $('#all-goods-div').append(html);
+                        if(flag == true){
+                            var buyAmount = b.buyAmount;
+                            var html = "<div class='col-sm-6 col-md-3'><div class='thumbnail'><a href='/goods/detail/"+goodsId+"'><img style='width: 256px;height: 256px' src='"+goodsImg+"' alt='"+goodsTitle+"'></a><div class='caption'><p>"+goodsTitle+"<span>(已购:"+buyAmount+"件)</span></p><p>&yen;"+goodsPrice+"</p></div></div></div>";
+                            $('#all-goods-div').append(html);
+                        }
+                        else{
+                            var html = "<div class='col-sm-6 col-md-3'><div class='thumbnail'><a href='/goods/detail/"+goodsId+"'><img style='width: 256px;height: 256px' src='"+goodsImg+"' alt='"+goodsTitle+"'></a><div class='caption'><p>"+goodsTitle+"</p><p>&yen;"+goodsPrice+"</p></div></div></div>";
+                            $('#all-goods-div').append(html);
+                        }
+
                     });
                     $('#total-count').html(goodsList.length);
                 }
@@ -170,8 +268,15 @@
                         var goodsTitle = b.goodsTitle;
                         var goodsImg = b.goodsImage;
                         var goodsPrice = b.goodsPrice;
-                        var html = "<div class='col-sm-6 col-md-3'><div class='thumbnail'><a href='/goods/detail/"+goodsId+"'><img style='width: 256px;height: 256px' src='"+goodsImg+"' alt='"+goodsTitle+"'></a><div class='caption'><p>"+goodsTitle+"</p><p>&yen"+goodsPrice+"</p></div></div></div>";
-                        $('#all-goods-div').append(html);
+                        if(flag == true){
+                            var soldAmount = b.soldAmount;
+                            var html = "<div class='col-sm-6 col-md-3'><div class='thumbnail'><a href='/goods/detail/"+goodsId+"'><img style='width: 256px;height: 256px' src='"+goodsImg+"' alt='"+goodsTitle+"'></a><div class='caption'><p>"+goodsTitle+"<a class='btn btn-link'>(已售:"+soldAmount+"件)</a></p><p>&yen;"+goodsPrice+"</p></div></div></div>";
+                            $('#all-goods-div').append(html);
+                        }
+                        else{
+                            var html = "<div class='col-sm-6 col-md-3'><div class='thumbnail'><a href='/goods/detail/"+goodsId+"'><img style='width: 256px;height: 256px' src='"+goodsImg+"' alt='"+goodsTitle+"'></a><div class='caption'><p>"+goodsTitle+"<a href='/goods/delete/"+goodsId+"' class='btn btn-link'>删除</a></p><p>&yen;"+goodsPrice+"</p></div></div></div>";
+                            $('#all-goods-div').append(html);
+                        }
                     });
                     $('#total-count').html(goodsList.length);
                 }

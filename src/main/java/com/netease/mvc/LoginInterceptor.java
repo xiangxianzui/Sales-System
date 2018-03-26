@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 /**
- * Created by wanghao on 8/7/17.
+ * Created by wanghao on 3/3/18.
  */
 public class LoginInterceptor implements HandlerInterceptor {
     private static final Logger logger = Logger.getLogger(LoginInterceptor.class);

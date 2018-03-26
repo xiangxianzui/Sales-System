@@ -16,6 +16,7 @@
     <div class="container">
         <div class="text-center">
             <h1>404 Not Found</h1>
+            <h1>The page or resource is not found on this server</h1>
         </div>
 
     </div>

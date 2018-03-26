@@ -15,6 +15,8 @@ public class OrderInfoModel implements Serializable {
 
     private long sellerId;
 
+    private long goodsId;
+
     private BigDecimal price;
 
     private int amount;
@@ -22,6 +24,8 @@ public class OrderInfoModel implements Serializable {
     private Date createTime;
 
     private Date payTime;
+
+    private int status;
 
     /*public OrderInfoModel(long id, long buyerId, long sellerId, BigDecimal price, int amount, Date createTime, Date payTime) {
         this.id = id;
@@ -32,9 +36,6 @@ public class OrderInfoModel implements Serializable {
         this.createTime = createTime;
         this.payTime = payTime;
     }*/
-
-    /*---- 关联表信息 ----*/
-    private GoodsInfoModel goods;
 
     public long getId() {
         return id;
@@ -92,11 +93,19 @@ public class OrderInfoModel implements Serializable {
         this.payTime = payTime;
     }
 
-    public GoodsInfoModel getGoods() {
-        return goods;
+    public int getStatus() {
+        return status;
     }
 
-    public void setGoods(GoodsInfoModel goods) {
-        this.goods = goods;
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public long getGoodsId() {
+        return goodsId;
+    }
+
+    public void setGoodsId(long goodsId) {
+        this.goodsId = goodsId;
     }
 }

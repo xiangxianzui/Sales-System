@@ -39,6 +39,7 @@ CREATE TABLE `order_info` (
   `amount` int(10) NOT NULL DEFAULT 0 COMMENT '成交货量',
   `create_time` datetime NOT NULL DEFAULT '1970-01-01 00:00:00' COMMENT '订单创建时间',
   `pay_time` datetime NOT NULL DEFAULT '1970-01-01 00:00:00' COMMENT '订单支付时间',
+  `status` tinyint unsigned NOT NULL DEFAULT '0' COMMENT '状态',
   PRIMARY KEY (`id`),
   INDEX `idx_buyer` (`buyer_id`),
   INDEX `idx_seller` (`seller_id`)

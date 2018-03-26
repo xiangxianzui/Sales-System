@@ -2,6 +2,10 @@ package com.netease.db.model;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
@@ -33,10 +37,13 @@ public class GoodsInfoModel implements Serializable {
     @Size(min = 2, max = 1000, message = "2~1000个字符")
     private String des;
 
-    /*@NotEmpty(message = "单价不能为空")*/
+    @NotNull(message = "单价不能为空")
+    @Digits(integer = 64, fraction = 64, message = "请输入数字")
+    @DecimalMin(value = "0", message = "单价不能为负")
     private BigDecimal price;
 
-    /*@NotEmpty(message = "库存不能为空")*/
+    @NotNull(message = "库存不能为空")
+    @Min(value = 1, message = "库存不能少于1件")
     private int amount;
 
     public long getId() {

@@ -16,6 +16,7 @@
 <div class="container">
     <div class="text-center">
         <h1>403 Forbidden</h1>
+        <h1>You are not authorized to view this page</h1>
     </div>
 </div>
 </body>
