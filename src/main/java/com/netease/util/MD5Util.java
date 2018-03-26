@@ -1,16 +1,14 @@
 package com.netease.util;
 
 import com.google.common.base.Strings;
-import sun.misc.BASE64Encoder;
 
-import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 /**
  * Created by wanghao on 2/9/18.
  */
-public class MyUtil {
+public class MD5Util {
 
     public static String MD5(String str){
         if(Strings.isNullOrEmpty(str)){

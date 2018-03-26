@@ -5,9 +5,8 @@ import com.netease.db.model.UserInfoModel;
 import com.netease.service.enums.LoginMsg;
 import com.netease.service.enums.LogoutMsg;
 import com.netease.util.ModelConstant;
-import com.netease.util.MyUtil;
+import com.netease.util.MD5Util;
 import org.springframework.stereotype.Service;
-import sun.rmi.runtime.Log;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -38,7 +37,7 @@ public class UserServiceImpl implements UserService{
             return retMsg;
         }
         String password = loginUser.getPassword();
-        String MD5Pwd = MyUtil.MD5(password);
+        String MD5Pwd = MD5Util.MD5(password);
         if(!userInfoModel.getPassword().equalsIgnoreCase(MD5Pwd)){
             retMsg = LoginMsg.FAIL_WRONG_PWD.EXTVALUE;
             return retMsg;

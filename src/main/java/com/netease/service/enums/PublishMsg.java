@@ -8,7 +8,8 @@ public enum PublishMsg {
     FAIL_UNCORRECT_USER(1, "无发布权限的用户"),
     FAIL_UNKNOWN_USER(2, "未知身份的用户"),
     FAIL_NO_USER(3, "未登录的用户"),
-    FAIL_NULL_GOODS(4, "商品不存在");
+    FAIL_NULL_GOODS(4, "商品不存在"),
+    FAIL_TOO_MANY_GOODS(5, "商品个数超限");
 
     public final int VALUE;
     public final String EXTVALUE;

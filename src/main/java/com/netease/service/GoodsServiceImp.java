@@ -80,6 +80,12 @@ public class GoodsServiceImp implements GoodsService{
                 return retMsg;
             }
 
+            int totalGoodsCount = getGoodsCount();
+            if(totalGoodsCount >= 1000){
+                retMsg = PublishMsg.FAIL_TOO_MANY_GOODS.EXTVALUE;
+                return retMsg;
+            }
+
             goodsInfoModel.setSellerId(curUser.getId());
             goodsInfoDao.save(goodsInfoModel);
             retMsg = PublishMsg.SUCCESS.EXTVALUE;
